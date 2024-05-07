@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"strconv"
+	"user-api/exception"
 	"user-api/ports"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +24,10 @@ func (controller UserController) Route(app *fiber.App) {
 func (controller UserController) GetOne(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	user := controller.UserService.GetOne(c.Context(), id)
+	idInt, err := strconv.ParseUint(id, 10, 64)
+	exception.FatalLogging(err, fmt.Sprintf("id not converted to unsigned integer: %s", err))
+
+	user := controller.UserService.GetOne(c.Context(), uint(idInt))
 
 	return c.Status(fiber.StatusOK).JSON(user)
 }
