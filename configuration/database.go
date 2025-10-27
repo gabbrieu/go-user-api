@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"user-api/entities"
 	"user-api/exception"
 
 	"github.com/joho/godotenv"
@@ -32,4 +33,8 @@ func NewDatabase() *gorm.DB {
 	exception.FatalLogging(err, fmt.Sprintf("could not open the database: %s", err))
 
 	return db
+}
+
+func Migrate(db *gorm.DB) {
+	db.AutoMigrate(&entities.User{})
 }
