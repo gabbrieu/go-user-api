@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"user-api/common"
 	"user-api/entities"
 	"user-api/ports"
 )
@@ -15,6 +16,13 @@ func NewUserService(userRepository *ports.UserRepository) ports.UserService {
 }
 
 func (service *userService) Create(ctx context.Context, createUserDTO ports.CreateUserDto) (*entities.User, error) {
+	hashedPassword, err := common.HashPassword(createUserDTO.Password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	createUserDTO.Password = hashedPassword
 	return service.UserRepository.Create(ctx, createUserDTO)
 }
 
