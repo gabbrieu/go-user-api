@@ -4,6 +4,7 @@ import (
 	"log"
 	"user-api/configuration"
 	controller "user-api/controllers"
+	"user-api/handlers"
 	repository "user-api/repositories"
 	service "user-api/services"
 
@@ -18,7 +19,10 @@ func main() {
 	userService := service.NewUserService(&userRepository)
 	userController := controller.NewUserController(&userService)
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		AppName:      "Go User API",
+		ErrorHandler: handlers.ErrorHandler,
+	})
 	userController.Route(app)
 
 	log.Fatal(app.Listen(":3000"))

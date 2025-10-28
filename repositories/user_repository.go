@@ -8,6 +8,7 @@ import (
 	"user-api/ports"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type userRepository struct {
@@ -30,6 +31,32 @@ func (repository *userRepository) Create(ctx context.Context, dto ports.CreateUs
 	}
 
 	return user, nil
+}
+
+func (repository *userRepository) Update(ctx context.Context, id uint, dto ports.UpdateUserDto) (*entities.User, error) {
+	updates := map[string]any{}
+
+	if dto.Name != nil {
+		updates["name"] = *dto.Name
+	}
+
+	tx := repository.WithContext(ctx).Model(&entities.User{}).Where("id = ?", id).Updates(updates).Clauses(clause.Returning{})
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	var updated entities.User
+	if err := tx.Scan(&updated).Error; err != nil {
+		if err := repository.WithContext(ctx).Where("id = ?", id).First(&updated).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	return &updated, nil
 }
 
 func (repository *userRepository) GetAll(ctx context.Context) ([]entities.User, error) {

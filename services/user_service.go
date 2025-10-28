@@ -26,6 +26,10 @@ func (service *userService) Create(ctx context.Context, createUserDTO ports.Crea
 	return service.UserRepository.Create(ctx, createUserDTO)
 }
 
+func (service *userService) Update(ctx context.Context, id uint, updateUserDTO ports.UpdateUserDto) (*entities.User, error) {
+	return service.UserRepository.Update(ctx, id, updateUserDTO)
+}
+
 func (service *userService) GetOne(ctx context.Context, id uint) (*entities.User, error) {
 	return service.UserRepository.GetOne(ctx, id)
 }
