@@ -24,13 +24,13 @@ func NewDatabase() *gorm.DB {
 	databaseName := os.Getenv("DATABASE_NAME")
 	port, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
 
-	exception.FatalLogging(err, fmt.Sprintf("something wrong happens when trying to convert the string port: %s", err))
+	exception.FatalLogging(err, fmt.Sprintf("Something wrong happens when trying to convert the string port: %s", err))
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", host, user, password, databaseName, port)
 
 	db, err := gorm.Open(postgres.Open(dsn))
 
-	exception.FatalLogging(err, fmt.Sprintf("could not open the database: %s", err))
+	exception.FatalLogging(err, fmt.Sprintf("Could not open the database: %s", err))
 
 	return db
 }
