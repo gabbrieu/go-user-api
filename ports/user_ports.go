@@ -10,6 +10,7 @@ type UserService interface {
 	GetOne(ctx context.Context, id uint) (*entities.User, error)
 	GetAll(ctx context.Context) ([]entities.User, error)
 	Update(ctx context.Context, id uint, updateUserDTO UpdateUserDto) (*entities.User, error)
+	Delete(ctx context.Context, id uint) error
 }
 
 type UserRepository interface {
@@ -17,6 +18,7 @@ type UserRepository interface {
 	GetOne(ctx context.Context, id uint) (*entities.User, error)
 	GetAll(ctx context.Context) ([]entities.User, error)
 	Update(ctx context.Context, id uint, updateUserDTO UpdateUserDto) (*entities.User, error)
+	Delete(ctx context.Context, id uint) error
 }
 
 type CreateUserDto struct {

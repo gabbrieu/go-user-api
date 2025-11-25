@@ -76,3 +76,7 @@ func (r *userRepository) GetOne(ctx context.Context, id uint) (*entities.User, e
 
 	return &user, nil
 }
+
+func (r *userRepository) Delete(ctx context.Context, id uint) error {
+	return r.WithContext(ctx).Delete(&entities.User{}, id).Error
+}

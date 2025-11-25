@@ -37,3 +37,7 @@ func (service *userService) GetOne(ctx context.Context, id uint) (*entities.User
 func (service *userService) GetAll(ctx context.Context) ([]entities.User, error) {
 	return service.UserRepository.GetAll(ctx)
 }
+
+func (service *userService) Delete(ctx context.Context, id uint) error {
+	return service.UserRepository.Delete(ctx, id)
+}

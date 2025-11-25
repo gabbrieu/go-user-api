@@ -24,6 +24,7 @@ func (ctl UserController) Route(app *fiber.App) {
 	app.Get("/users", ctl.GetAll)
 	app.Post("/users", ctl.Create)
 	app.Patch("/users/:id", ctl.Update)
+	app.Delete("/users/:id", ctl.DeleteUser)
 }
 
 func (ctl UserController) Create(c *fiber.Ctx) error {
@@ -79,17 +80,34 @@ func (ctl UserController) GetOne(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(user)
 }
 
-func getOneUser(ctx *fiber.Ctx, ctl UserController) (*entities.User, error) {
-	id := ctx.Params("id")
+func getOneUser(c *fiber.Ctx, ctl UserController) (*entities.User, error) {
+	id := c.Params("id")
 
 	idInt, err := strconv.ParseUint(id, 10, 64)
-	exception.FatalLogging(err, fmt.Sprintf("Id not converted to unsigned integer: %s", err))
+	if err != nil {
+		return nil, exception.ParseError(c, fmt.Sprintf("Id not converted to unsigned integer: %s", err.Error()))
+	}
 
-	user, err := ctl.UserService.GetOne(ctx.Context(), uint(idInt))
+	user, err := ctl.UserService.GetOne(c.Context(), uint(idInt))
 
 	if err != nil {
 		return nil, common.MapServiceError(err)
 	}
 
 	return user, nil
+}
+
+func (ctl UserController) DeleteUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	idInt, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return exception.ParseError(c, fmt.Sprintf("Id not converted to unsigned integer: %s", err.Error()))
+	}
+
+	if err := ctl.UserService.Delete(c.Context(), uint(idInt)); err != nil {
+		return err
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }
